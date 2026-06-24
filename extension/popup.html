@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>yt-helper</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-root">
+
+    <header class="popup-header">
+      <span class="logo">▶ yt-helper</span>
+      <span id="server-status" class="status-dot status-unknown" title="Vérification…"></span>
+    </header>
+
+    <!-- Statut serveur -->
+    <section class="section">
+      <div id="server-msg" class="server-msg server-unknown">Vérification du serveur…</div>
+    </section>
+
+    <!-- Connexion serveur -->
+    <section class="section">
+      <div class="label">Serveur</div>
+
+      <div class="setting-row">
+        <label for="server-url">URL du serveur</label>
+        <input id="server-url" type="text" class="input"
+          placeholder="http://127.0.0.1:5000  ou  https://xxx.railway.app" />
+        <div class="hint">Local : <code>http://127.0.0.1:5000</code> · Railway : l'URL fournie par Railway</div>
+      </div>
+
+      <div class="setting-row" id="token-row">
+        <label for="token-input">Token secret <span class="hint-inline">(Railway uniquement)</span></label>
+        <div class="token-row">
+          <input id="token-input" type="password" class="input"
+            placeholder="Laisse vide pour le serveur local" autocomplete="off" />
+          <button id="token-show" class="btn-icon" title="Afficher / masquer">👁</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Réglages -->
+    <section class="section">
+      <div class="label">Réglages</div>
+
+      <div class="setting-row">
+        <label for="fmt-select">Format par défaut</label>
+        <select id="fmt-select" class="select">
+          <option value="mp4">Vidéo MP4 (vidéo + audio)</option>
+          <option value="audio">Audio seulement (M4A)</option>
+        </select>
+      </div>
+
+      <div class="setting-row" id="cookies-row">
+        <label for="cookies-check" class="checkbox-label">
+          <input id="cookies-check" type="checkbox" />
+          Utiliser mes cookies Chrome
+          <span class="hint-inline">(local uniquement, vidéos privées)</span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <label>Dossier de sortie</label>
+        <div id="output-dir" class="output-dir">—</div>
+      </div>
+    </section>
+
+    <!-- Progression -->
+    <section class="section" id="progress-section" style="display:none">
+      <div class="label">Téléchargement en cours</div>
+      <div class="progress-bar-wrap">
+        <div id="popup-progress-fill" class="progress-fill"></div>
+      </div>
+      <div id="popup-progress-label" class="progress-label">En attente…</div>
+      <a id="download-link" class="download-link" style="display:none" target="_blank">
+        ⬇ Télécharger le fichier
+      </a>
+    </section>
+
+    <section class="section">
+      <button id="save-btn" class="btn-primary">Sauvegarder les réglages</button>
+      <div id="save-msg" class="save-msg"></div>
+    </section>
+
+    <footer class="popup-footer">yt-helper v2.0</footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+/* popup.css — Interface dark de la popup yt-helper */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  width: 340px;
+  min-height: 200px;
+  background: #0f0f0f;
+  color: #e0e0e0;
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.popup-root {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ---- En-tête ---- */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ff4444;
+  letter-spacing: 0.04em;
+}
+
+/* Indicateur serveur */
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.status-ok      { background: #4caf50; box-shadow: 0 0 6px #4caf5099; }
+.status-error   { background: #e53935; box-shadow: 0 0 6px #e5393599; }
+.status-unknown { background: #757575; }
+
+/* ---- Sections ---- */
+.section {
+  padding: 10px 14px;
+  border-bottom: 1px solid #1e1e1e;
+}
+.section:last-child { border-bottom: none; }
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+/* ---- Statut serveur ---- */
+.server-msg {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.server-ok      { background: #1b2e1b; color: #81c784; }
+.server-error   { background: #2e1b1b; color: #ef9a9a; }
+.server-unknown { background: #1e1e1e; color: #aaa; }
+
+/* ---- Input token ---- */
+.token-row {
+  display: flex;
+  gap: 6px;
+}
+
+.input {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #e0e0e0;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-family: "Consolas", "Courier New", monospace;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: #ff4444; }
+.input::placeholder { color: #555; }
+
+.btn-icon {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 15px;
+  transition: background 0.15s;
+}
+.btn-icon:hover { background: #252525; }
+
+/* ---- Réglages ---- */
+.setting-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+.setting-row:last-child { margin-bottom: 0; }
+
+.select {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #e0e0e0;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+.select:focus { border-color: #ff4444; }
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.checkbox-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #ff4444;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 11px;
+  color: #555;
+  margin-top: 4px;
+}
+.hint-inline {
+  font-size: 11px;
+  color: #555;
+}
+
+.output-dir {
+  font-size: 11px;
+  font-family: "Consolas", monospace;
+  color: #bbb;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 5px 8px;
+  word-break: break-all;
+}
+
+/* ---- Progression ---- */
+.progress-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #ff4444;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-size: 11px;
+  color: #aaa;
+}
+
+/* ---- Bouton Sauvegarder ---- */
+.btn-primary {
+  width: 100%;
+  background: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-primary:hover  { background: #cc0000; }
+.btn-primary:active { transform: scale(0.98); }
+
+.save-msg {
+  font-size: 11px;
+  color: #4caf50;
+  margin-top: 5px;
+  min-height: 14px;
+  text-align: center;
+}
+
+/* ---- Pied de page ---- */
+.popup-footer {
+  padding: 8px 14px;
+  font-size: 10px;
+  color: #444;
+  text-align: center;
+  background: #0a0a0a;
+}
+
+code {
+  font-family: "Consolas", monospace;
+  font-size: 11px;
+  background: #1e1e1e;
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: #ccc;
+}
+
+.token-row {
+  display: flex;
+  gap: 6px;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 7px 14px;
+  background: #ff4444;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+.download-link:hover { background: #cc0000; }

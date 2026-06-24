@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "yt-helper — Téléchargeur MP4 propre",
+  "version": "1.0.0",
+  "description": "Télécharge tes vidéos YouTube en MP4 propre via un serveur local yt-dlp.",
+
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+
+  "host_permissions": [
+    "http://127.0.0.1:5000/*",
+    "https://*.railway.app/*",
+    "https://*.youtube.com/*",
+    "https://i.ytimg.com/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/watch*",
+        "https://www.youtube.com/shorts/*",
+        "https://studio.youtube.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
