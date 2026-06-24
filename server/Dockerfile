@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Installe curl + Node.js 20 LTS (requis par yt-dlp pour résoudre les signatures YouTube)
+# Node.js 20 LTS + ffmpeg
 RUN apt-get update && \
     apt-get install -y curl ffmpeg --no-install-recommends && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
@@ -12,7 +12,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install --no-cache-dir yt-dlp
+# yt-dlp + solver JS EJS (résout les challenges de signature YouTube)
+RUN pip install --no-cache-dir yt-dlp && \
+    npm install -g @yt-dlp/yt-dlp-js-solver
 
 COPY server.py .
 
