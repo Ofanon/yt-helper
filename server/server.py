@@ -81,6 +81,20 @@ OUTPUT_DIR = Path(config["output_dir"])
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
+# Cookies YouTube (cloud uniquement) — écrits dans /tmp/yt_cookies.txt
+# La variable d'env YT_COOKIES doit contenir le contenu d'un fichier cookies.txt
+# exporté depuis Chrome (extension "Get cookies.txt LOCALLY" sur youtube.com).
+# ---------------------------------------------------------------------------
+COOKIES_FILE = None
+if IS_CLOUD:
+    cookies_content = os.environ.get("YT_COOKIES", "").strip()
+    if cookies_content:
+        COOKIES_FILE = "/tmp/yt_cookies.txt"
+        with open(COOKIES_FILE, "w", encoding="utf-8") as f:
+            f.write(cookies_content)
+        log.info("✓ Cookies YouTube chargés depuis YT_COOKIES")
+
+# ---------------------------------------------------------------------------
 # Détection des outils
 # ---------------------------------------------------------------------------
 
@@ -202,8 +216,10 @@ def _run_download(job_id: str, url: str, fmt: str, use_cookies: bool):
         cmd += ["-f", "bv*+ba/b", "--merge-output-format", "mp4",
                 "--postprocessor-args", "ffmpeg:-c:v copy -c:a aac"]
 
-    if use_cookies:
+    if use_cookies and not IS_CLOUD:
         cmd += ["--cookies-from-browser", "chrome"]
+    elif IS_CLOUD and COOKIES_FILE:
+        cmd += ["--cookies", COOKIES_FILE]
 
     if FFMPEG_EXE and Path(FFMPEG_EXE).is_absolute():
         cmd += ["--ffmpeg-location", str(Path(FFMPEG_EXE).parent)]
