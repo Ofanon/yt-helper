@@ -222,6 +222,10 @@ def _run_download(job_id: str, url: str, fmt: str, use_cookies: bool):
     elif IS_CLOUD and COOKIES_FILE:
         cmd += ["--cookies", COOKIES_FILE]
 
+    # En mode cloud : client iOS pour contourner la résolution de signatures JS
+    if IS_CLOUD:
+        cmd += ["--extractor-args", "youtube:player_client=ios,web_creator"]
+
     if FFMPEG_EXE and Path(FFMPEG_EXE).is_absolute():
         cmd += ["--ffmpeg-location", str(Path(FFMPEG_EXE).parent)]
 
