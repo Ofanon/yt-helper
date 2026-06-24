@@ -1,8 +1,10 @@
 FROM python:3.11-slim
 
-# Installe ffmpeg + Node.js (requis par yt-dlp pour extraire YouTube)
+# Installe curl + Node.js 20 LTS (requis par yt-dlp pour résoudre les signatures YouTube)
 RUN apt-get update && \
-    apt-get install -y ffmpeg nodejs --no-install-recommends && \
+    apt-get install -y curl ffmpeg --no-install-recommends && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -10,7 +12,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# yt-dlp via pip (version la plus récente)
 RUN pip install --no-cache-dir yt-dlp
 
 COPY server.py .
