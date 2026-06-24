@@ -2,7 +2,7 @@
  * content.js — Injecte des boutons natifs YouTube pour télécharger vidéos et Shorts.
  */
 
-const SERVER = "http://127.0.0.1:5000";
+const DEFAULT_SERVER = "http://127.0.0.1:5000";
 const BTN_ID = "yt-helper-btn-download";
 const THUMB_BTN_ID = "yt-helper-btn-thumb";
 
@@ -31,7 +31,12 @@ function getVideoId() {
 }
 
 async function getSettings() {
-  return new Promise((r) => chrome.storage.local.get({ format: "mp4", useCookies: false }, r));
+  return new Promise((r) =>
+    chrome.storage.local.get(
+      { serverUrl: DEFAULT_SERVER, token: "", format: "mp4", useCookies: false },
+      r
+    )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -191,26 +196,34 @@ function fallbackFloat(btnDownload, btnThumb, progressBar) {
 
 async function startDownload(videoId, progressBar) {
   const settings = await getSettings();
-  const url = location.pathname.startsWith("/shorts/")
+  const server = (settings.serverUrl || DEFAULT_SERVER).replace(/\/$/, "");
+  const token  = settings.token || "";
+  const headers = { "Content-Type": "application/json", ...(token ? { "X-Auth-Token": token } : {}) };
+
+  const ytUrl = location.pathname.startsWith("/shorts/")
     ? `https://www.youtube.com/shorts/${videoId}`
     : `https://www.youtube.com/watch?v=${videoId}`;
 
   showProgress(progressBar, 0, "Connexion au serveur…");
 
   try {
-    const h = await fetch(`${SERVER}/health`);
+    const h = await fetch(`${server}/health`, { headers });
     if (!h.ok) throw new Error();
   } catch {
-    showProgress(progressBar, 0, "⚠ Serveur introuvable — lance python server.py", true);
+    const isLocal = server.includes("127.0.0.1") || server.includes("localhost");
+    showProgress(progressBar, 0,
+      isLocal ? "⚠ Serveur introuvable — lance python server.py"
+              : "⚠ Serveur Railway introuvable — vérifie le déploiement",
+      true);
     return;
   }
 
   let resp;
   try {
-    resp = await fetch(`${SERVER}/download`, {
+    resp = await fetch(`${server}/download`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, format: settings.format || "mp4", cookies: settings.useCookies }),
+      headers,
+      body: JSON.stringify({ url: ytUrl, format: settings.format || "mp4", cookies: settings.useCookies }),
     });
   } catch {
     showProgress(progressBar, 0, "⚠ Impossible de contacter le serveur", true);
@@ -225,18 +238,19 @@ async function startDownload(videoId, progressBar) {
 
   const { job_id } = await resp.json();
   chrome.runtime.sendMessage({ type: "JOB_STARTED", jobId: job_id }).catch(() => {});
-  startPolling(job_id, progressBar);
+  startPolling(job_id, server, token, progressBar);
 }
 
 // ---------------------------------------------------------------------------
 // Progression
 // ---------------------------------------------------------------------------
 
-function startPolling(jobId, progressBar) {
+function startPolling(jobId, server, token, progressBar) {
   stopPolling();
+  const headers = token ? { "X-Auth-Token": token } : {};
   pollInterval = setInterval(async () => {
     try {
-      const r = await fetch(`${SERVER}/progress/${jobId}`);
+      const r = await fetch(`${server}/progress/${jobId}`, { headers });
       if (!r.ok) return;
       const d = await r.json();
 
