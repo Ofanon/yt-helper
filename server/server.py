@@ -163,8 +163,9 @@ def health():
         "version": VERSION,
         "mode": "cloud" if IS_CLOUD else "local",
         "output_dir": str(OUTPUT_DIR),
-        "ytdlp_ok":  check_tool("yt-dlp"),
-        "ffmpeg_ok": check_tool("ffmpeg"),
+        "ytdlp_ok":   check_tool("yt-dlp"),
+        "ffmpeg_ok":  check_tool("ffmpeg"),
+        "cookies_ok": COOKIES_FILE is not None and Path(COOKIES_FILE).exists(),
     })
 
 
