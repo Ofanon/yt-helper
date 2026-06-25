@@ -87,12 +87,32 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # ---------------------------------------------------------------------------
 COOKIES_FILE = None
 if IS_CLOUD:
-    cookies_content = os.environ.get("YT_COOKIES", "").strip()
+    import base64
+    cookies_content = ""
+
+    # Priorité 1 : base64 (évite la corruption des newlines par Railway)
+    b64 = os.environ.get("YT_COOKIES_B64", "").strip()
+    if b64:
+        try:
+            cookies_content = base64.b64decode(b64).decode("utf-8")
+            log.info("✓ Cookies YouTube chargés depuis YT_COOKIES_B64")
+        except Exception as e:
+            log.error(f"⚠ Erreur décodage YT_COOKIES_B64 : {e}")
+
+    # Priorité 2 : texte brut (peut être corrompu si multi-ligne)
+    if not cookies_content:
+        cookies_content = os.environ.get("YT_COOKIES", "").strip()
+        if cookies_content:
+            log.info("✓ Cookies YouTube chargés depuis YT_COOKIES")
+
     if cookies_content:
         COOKIES_FILE = "/tmp/yt_cookies.txt"
         with open(COOKIES_FILE, "w", encoding="utf-8") as f:
             f.write(cookies_content)
-        log.info("✓ Cookies YouTube chargés depuis YT_COOKIES")
+        lines = cookies_content.count("\n")
+        log.info(f"  → {lines} lignes écrites dans {COOKIES_FILE}")
+    else:
+        log.warning("⚠ Aucun cookie trouvé (YT_COOKIES_B64 ou YT_COOKIES non défini)")
 
 # ---------------------------------------------------------------------------
 # Détection des outils
